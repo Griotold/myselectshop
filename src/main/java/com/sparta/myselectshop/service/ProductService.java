@@ -10,6 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Transactional(readOnly = true)
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -41,5 +45,16 @@ public class ProductService {
         product.update(requestDto);
 
         return new ProductResponseDto(product);
+    }
+
+    public List<ProductResponseDto> getProducts() {
+        // todo 스트림으로 변환
+        List<Product> products = productRepository.findAll();
+        List<ProductResponseDto> responseDtos = new ArrayList<>();
+
+        for (Product product : products) {
+            responseDtos.add(new ProductResponseDto(product));
+        }
+        return responseDtos;
     }
 }
