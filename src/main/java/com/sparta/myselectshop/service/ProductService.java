@@ -4,13 +4,13 @@ import com.sparta.myselectshop.dto.ProductMypriceRequestDto;
 import com.sparta.myselectshop.dto.ProductRequestDto;
 import com.sparta.myselectshop.dto.ProductResponseDto;
 import com.sparta.myselectshop.entity.Product;
+import com.sparta.myselectshop.naver.dto.ItemDto;
 import com.sparta.myselectshop.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Transactional(readOnly = true)
@@ -48,13 +48,16 @@ public class ProductService {
     }
 
     public List<ProductResponseDto> getProducts() {
-        // todo 스트림으로 변환
-        List<Product> products = productRepository.findAll();
-        List<ProductResponseDto> responseDtos = new ArrayList<>();
+        return productRepository.findAll().stream()
+                .map(ProductResponseDto::new)
+                .toList();
+    }
 
-        for (Product product : products) {
-            responseDtos.add(new ProductResponseDto(product));
-        }
-        return responseDtos;
+    @Transactional
+    public void updateBySearch(Long id, ItemDto itemDto) {
+        Product product = productRepository.findById(id).orElseThrow(() ->
+                new NullPointerException("해당 상품은 존재하지 않습니다.")
+        );
+        product.updateByItemDto(itemDto);
     }
 }
