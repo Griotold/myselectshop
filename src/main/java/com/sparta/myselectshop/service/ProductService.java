@@ -27,6 +27,7 @@ public class ProductService {
 
     public static final int MIN_MY_PRICE = 100;
 
+    @Transactional
     public ProductResponseDto createProduct(ProductRequestDto productRequestDto, User user) {
         log.info("Creating product : {}", productRequestDto);
         Product product = productRepository.save(new Product(productRequestDto, user));
